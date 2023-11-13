@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>异步编程示例</title>
+  </head>
+  <body>
+    <h2>异步编程示例</h2>
+    <p>回调函数等待 3 秒后执行。</p>
+    <p id="university"></p>
+    <p id="college"></p>
+    
+    <script>
+      setTimeout(function () {
+        document.getElementById("college").innerHTML = "计算机科学与技术学院";
+      }, 3000);
+      document.getElementById("university").innerHTML = "中国海洋大学";
+    </script>
+  </body>
+</html>

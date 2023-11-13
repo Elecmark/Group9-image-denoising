@@ -1,0 +1,8 @@
+{
+  "sites": [
+    { "name": "中国海洋大学", "url": "www.ouc.edu.cn" },
+    { "name": "Google", "url": "www.google.com" },
+    { "name": "Taobao", "url": "www.taobao.com" }
+  ]
+}
+

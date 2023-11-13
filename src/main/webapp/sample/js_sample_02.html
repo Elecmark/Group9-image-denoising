@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>解析JSON示例</title>
+  </head>
+  <body>
+    <h2>解析JSON示例</h2>
+    <p id="demo"></p>
+    <script>
+      var text = `{"sites": [{ "name": "中国海洋大学", "url": "www.ouc.edu.cn" }, { "name": "Google", "url": "www.google.com" }, { "name": "Taobao", "url": "www.taobao.com" }]}`;
+      obj = JSON.parse(text);
+      document.getElementById("demo").innerHTML =
+        obj.sites[0].name + " - " + obj.sites[0].url;
+    </script>
+  </body>
+</html>
