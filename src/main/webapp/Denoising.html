@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>云去噪</title>
+
+<link
+	href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.2.3/css/bootstrap.min.css"
+	rel="stylesheet">
+<style>
+body {
+	overflow: hidden;
+}
+
+.custom-tab {
+	width: 550px;
+}
+
+.divL {
+	margin-left: 1050px;
+}
+
+.divL2 {
+	margin-left: 50px;
+}
+
+.divR {
+	margin-right: 50px;
+}
+
+.btn-icon {
+	background: none; /* 移除背景颜色 */
+	border: none; /* 移除边框 */
+	padding: 0; /* 移除内边距 */
+	cursor: pointer; /* 添加鼠标指针样式 */
+	outline: none; /* 添加此行代码以移除点击后的边框 */
+}
+
+.btn:focus {
+	outline: none;
+}
+
+.btn-icon:hover svg {
+	fill: #0a58ca; /* 设置鼠标悬停时图标的颜色 */
+}
+
+.btn-icon:active svg {
+	fill: #0d6efd; /* 设置图标被点击时的颜色 */
+}
+
+.dropdown-menu {
+	width: 0px; /* 设置下拉菜单的宽度为 200px */
+}
+
+.navbar .navbarSupportedContent {
+	position: relative;
+}
+
+.navbar .user-container {
+	position: relative;
+	bottom: 0;
+	right: 0;
+	left: 0;
+	margin: 0 auto; /* 将导航栏的内容居中 */
+	display: table; /* 设置元素为表格布局，以便使用 margin: 0 auto 居中元素 */
+}
+
+.navbar .git-link {
+	position: relative;
+	bottom: 0;
+	right: 0;
+	left: 0;
+	margin: 0 auto; /* 将导航栏的内容居中 */
+	display: table; /* 设置元素为表格布局，以便使用 margin: 0 auto 居中元素 */
+}
+
+.navbar .ouc-link {
+	position: relative;
+	bottom: 0;
+	right: 0;
+	left: 0;
+	margin: 0 auto; /* 将导航栏的内容居中 */
+	display: table; /* 设置元素为表格布局，以便使用 margin: 0 auto 居中元素 */
+}
+
+.navbar .chatgpt-link {
+	position: relative;
+	bottom: 0;
+	right: 0;
+	left: 0;
+	margin: 0 auto; /* 将导航栏的内容居中 */
+	display: table; /* 设置元素为表格布局，以便使用 margin: 0 auto 居中元素 */
+}
+
+.invisible-button {
+	opacity: 0; /* 设置透明度为 0，使按钮完全透明 */
+	pointer-events: none; /* 禁用按钮的点击事件 */
+	cursor: default; /* 将鼠标光标设置为默认样式，表示不可点击 */
+	background: none; /* 设置按钮的背景为透明 */
+	border: none; /* 移除按钮的边框 */
+	padding: 0; /* 移除按钮的内边距 */
+}
+
+.card-text {
+	text-align: center;
+	font-size: 1.25rem; /* 文字大小 */
+	font-weight: bold; /* 文字加粗 */
+	margin-top: 1rem; /* 文字上边距 */
+}
+
+.card-img-top {
+	height: 24rem; /* 固定图片高度 */
+	object-fit: contain; /* 确保图片完整显示 */
+	width: 100%; /* 图片宽度与卡片相同 */
+}
+
+.card {
+	height: 24rem; /* 固定卡片高度 */
+	margin: 0 auto; /* 将内容居中 */
+}
+
+.btn-lg {
+	width: 50%; /* 按钮宽度为容器宽度的100% */
+	margin: 0 auto; /* 按钮居中显示 */
+}
+
+.button-container {
+	text-align: center; /* 按钮容器文本居中 */
+	margin-top: 1rem; /* 按钮容器上边距 */
+	margin-bottom: 2rem; /* 按钮容器下边距 */
+}
+/* 为进度条添加上下边距 */
+.progress {
+	width: 60%;
+	margin: 0 auto; /* 居中显示 */
+	margin-top: 4rem;
+	margin-bottom: 2rem;
+}
+
+.card-img-bottom {
+	margin-bottom: 0; /* 移除图片底部外边距 */
+}
+
+.card {
+	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2); /* 添加阴影效果 */
+	transition: 0.3s; /* 平滑过渡效果 */
+	height: 26rem; /* 固定卡片高度 */
+}
+
+.card:hover {
+	box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.3); /* 鼠标悬停时增加阴影 */
+}
+
+        /* 设置模态框图片为自适应并居中 */
+        #modalImage {
+            max-width: 100%;
+            height: auto;
+            display: block; /* 使图片成为块级元素 */
+            margin: 0 auto; /* 水平居中 */
+        }
+
+        /* 调整模态框内容区域以适应图片大小 */
+        .modal-content {
+            background: none; /* 无背景 */
+            border: none; /* 无边框 */
+            display: flex; /* 使用Flex布局 */
+            justify-content: center; /* 水平居中 */
+            align-items: center; /* 垂直居中 */
+        }
+
+        .modal-dialog {
+            max-width: fit-content; /* 适应内容宽度 */
+            margin: 1.75rem auto; /* 保持上下间距 */
+        }
+
+.navbar-brand, .dropdown-menu, .dropdown-menu-end, .user-container,
+	.container-fluid {
+	color: #ffffff; /* 设置为白色 */
+}
+</style>
+</head>
+<body>
+	<nav class="navbar bg-dark navbar-expand-lg bg-body-tertiary shadow">
+		<div class="container-fluid">
+			<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-cloud-upload divL2" viewBox="0 0 16 16">
+			  <path fill-rule="evenodd" d="M4.406 1.342A5.53 5.53 0 0 1 8 0c2.69 0 4.923 2 5.166 4.579C14.758 4.804 16 6.137 16 7.773 16 9.569 14.502 11 12.687 11H10a.5.5 0 0 1 0-1h2.688C13.979 10 15 8.988 15 7.773c0-1.216-1.02-2.228-2.313-2.228h-.5v-.5C12.188 2.825 10.328 1 8 1a4.53 4.53 0 0 0-2.941 1.1c-.757.652-1.153 1.438-1.153 2.055v.448l-.445.049C2.064 4.805 1 5.952 1 7.318 1 8.785 2.23 10 3.781 10H6a.5.5 0 0 1 0 1H3.781C1.708 11 0 9.366 0 7.318c0-1.763 1.266-3.223 2.942-3.593.143-.863.698-1.723 1.464-2.383z"/>
+			  <path fill-rule="evenodd" d="M7.646 4.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 5.707V14.5a.5.5 0 0 1-1 0V5.707L5.354 7.854a.5.5 0 1 1-.708-.708l3-3z"/>
+			</svg>
+			<h5>云去噪</h5>
+			<div class="collapse navbar-collapse" id="navbarSupportedContent">
+
+
+
+				<button class="invisible-button divL"></button>
+
+
+				<div class="chatgpt-link divL2">
+					<a href="https://elecmark.github.io/"
+						target="_blank" class="nav-link btn-icon" title="组长博客"> 
+						<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#ffffff" class="bi bi-chat-dots-fill" viewBox="0 0 16 16">
+						  <path d="M16 8c0 3.866-3.582 7-8 7a9.06 9.06 0 0 1-2.347-.306c-.584.296-1.925.864-4.181 1.234-.2.032-.352-.176-.273-.362.354-.836.674-1.95.77-2.966C.744 11.37 0 9.76 0 8c0-3.866 3.582-7 8-7s8 3.134 8 7zM5 8a1 1 0 1 0-2 0 1 1 0 0 0 2 0zm4 0a1 1 0 1 0-2 0 1 1 0 0 0 2 0zm3 1a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"/>
+						</svg>
+					</a>
+				</div>
+
+				<button class="invisible-button"></button>
+
+				<div class="git-link divL">
+					<a href="https://github.com/Elecmark/Group9-image-denoising"
+						target="_blank" class="nav-link btn-icon" title="gitLab"> 
+						<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#ffffff" class="bi bi-github" viewBox="0 0 16 16">
+			      		  <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8z" />
+				    	</svg>
+					</a>
+				</div>
+
+				<button class="invisible-button"></button>
+
+				<div class="user-container ml-auto divL">
+					<div class="btn-group">
+						<button type="button"
+							class="btn btn-outline-light dropdown-toggle"
+							data-bs-toggle="dropdown" aria-expanded="false">
+							<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+								fill="currentColor" class="bi bi-person-circle"
+								viewBox="0 0 16 16">
+                            <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" />
+                            <path fill-rule="evenodd"
+									d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z" />
+                        </svg>
+						<c:out value="${sessionScope.USER_INFO.username}" default=" 用 户 " />
+						</button>
+						
+						
+						<ul class="dropdown-menu dropdown-menu-end">
+							<c:choose>
+								<c:when test="${empty sessionScope.USER_INFO}">
+									<li><a href="login.html" class="dropdown-item"
+										type="button">登录</a></li>
+										<li><hr class="dropdown-divider"></li>
+									<li><a href="register.html" class="dropdown-item"
+										type="button">注册</a></li>
+								</c:when>
+								<c:otherwise>
+									<li><a href="userDetail.jsp" class="dropdown-item"
+										type="button">用户详情</a></li>
+										<li><hr class="dropdown-divider"></li>
+									<li><a href="logout" class="dropdown-item" type="button">退出登录</a></li>
+								</c:otherwise>
+							</c:choose>
+						</ul>
+					</div>
+				</div>
+
+			</div>
+		</div>
+	</nav>
+
+
+
+
+	<div class="container py-2 mb-2">
+		<div class="row align-items-center">
+
+			<div class="col mt-2 mb-2">
+				<!-- 标题列 -->
+				<h1 class="text-center">
+					<img src="images/Logo.png" style="height: 1em;">
+					<!-- 调整图片高度 -->
+					云去噪
+				</h1>
+			</div>
+		</div>
+		<div class="row">
+		
+		
+			<div class="col-lg-6 mb-4">
+			
+				<div class="card h-100 mb-2" data-bs-toggle="modal" data-bs-target="#imageModal">
+
+					<img src="images/原始图片.png" class="card-img-top">
+
+					<p class="card-text">原始图片</p>
+
+				</div>
+				
+				
+				<div class="button-container mb-1">
+					<button type="button" class="btn btn-primary btn-lg">上
+						传/Upload</button>
+				</div>
+			</div>
+			
+			
+			<div class="col-lg-6 mb-4">
+			
+				<div class="card h-100 mb-2" data-bs-toggle="modal" data-bs-target="#imageModal">
+
+					<img src="images/修复图片.png" class="card-img-top">
+
+					<p class="card-text">修复图片</p>
+				</div>
+				
+				
+				<div class="button-container mb-1">
+					<button type="button" class="btn btn-primary btn-lg">下
+						载/Download</button>
+				</div>
+			</div>
+		</div>
+
+		<div class="progress">
+			<div class="progress-bar" role="progressbar" style="width: 60%;"
+				aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">60%</div>
+		</div>
+	</div>
+	
+	        <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <img src="" class="img-fluid" id="modalImage">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+	<script
+		src="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.2.3/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // JavaScript代码用于在模态框中加载和展示图片
+        var imageModal = document.getElementById('imageModal');
+        imageModal.addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget; // 触发模态框的按钮
+            var src = button.querySelector('.card-img-top').src; // 获取图片的src
+            var modalImage = imageModal.querySelector('#modalImage');
+            modalImage.src = src; // 设置模态框中的图片src
+        });
+    </script>
+</body>
+</html>
