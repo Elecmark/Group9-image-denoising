@@ -10,10 +10,6 @@
 	href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.2.3/css/bootstrap.min.css"
 	rel="stylesheet">
 <style>
-.main-content {
-    min-height: 100vh; /* 100% of the viewport height */
-}
-
 html, body {
     margin: 0;
     padding: 0;
@@ -24,6 +20,10 @@ html, body {
 /* 通用样式 */
 .container-fluid, .navbar-brand, .dropdown-menu, .dropdown-menu-end, .user-container {
     color: #ffffff; /* 设置文本颜色为白色 */
+}
+
+.full-width-container {
+    min-height: 110vh;
 }
 
 .background-container {
@@ -112,11 +112,12 @@ html, body {
     font-size: 1.25rem;
     font-weight: bold;
     margin-top: 1rem;
+    margin-bottom: 2rem;
     color: #000000;
 }
 
 .card-img-top {
-    height: 22rem;
+    height: 20rem;
     object-fit: contain;
     width: 100%;
 }
@@ -125,8 +126,9 @@ html, body {
     margin: 0 auto;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
     transition: 0.3s;
-    height: 24rem;
+    height: 30rem;
     width: 90%;
+    margin-bottom: 2rem;
 }
 
 .btn-lg {
@@ -139,7 +141,7 @@ html, body {
     justify-content: center;
     text-align: center;
     margin-top: 1rem;
-    margin-bottom: 4rem;
+    margin-bottom: 2rem;
 }
 
 /* 进度条样式 */
@@ -181,8 +183,6 @@ html, body {
      display: block; /* 使图片居中 */
      margin: auto; /* 自动边距 */
  }
-
-
 </style>
 </head>
 <body>
@@ -222,42 +222,6 @@ html, body {
 					</a>
 				</div>
 
-				<button class="invisible-button"></button>
-
-				<div class="user-container ml-auto divL">
-					<div class="btn-group">
-						<button type="button"
-							class="btn btn-outline-light dropdown-toggle"
-							data-bs-toggle="dropdown" aria-expanded="false">
-							<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-								fill="currentColor" class="bi bi-person-circle"
-								viewBox="0 0 16 16">
-                            <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" />
-                            <path fill-rule="evenodd"
-									d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z" />
-                        </svg>
-						<c:out value="${sessionScope.USER_INFO.username}" default=" 用 户 " />
-						</button>
-						
-						
-						<ul class="dropdown-menu dropdown-menu-end">
-							<c:choose>
-								<c:when test="${empty sessionScope.USER_INFO}">
-									<li><a href="login.html" class="dropdown-item"
-										type="button">登录</a></li>
-										<li><hr class="dropdown-divider"></li>
-									<li><a href="register.html" class="dropdown-item"
-										type="button">注册</a></li>
-								</c:when>
-								<c:otherwise>
-									<li><a href="userDetail.jsp" class="dropdown-item"
-										type="button">用户详情</a></li>
-										<li><hr class="dropdown-divider"></li>
-									<li><a href="logout" class="dropdown-item" type="button">退出登录</a></li>
-								</c:otherwise>
-							</c:choose>
-						</ul>
-					</div>
 				</div>
 
 			</div>
@@ -278,23 +242,25 @@ html, body {
 		</div>
 
 		<div class="row justify-content-center">
-			<div class="col-lg-5 mb-4">
 
-				<div class="card h-100 mb-2" data-bs-toggle="modal"
+
+			<div class="col-lg-5 mb-6">
+
+				<div class="card h-90 mb-2" data-bs-toggle="modal"
 					data-bs-target="#imageModal">
 					<img id="imageDisplay" src="../static/images/原始图片.png" class="card-img-top">
 					<p class="card-text">原始图片</p>
-				</div>
 
-
-				<div class="container mb-3">
-					<div class="button-container mb-5 d-flex justify-content-center">
+                    					<div class="button-container mb-5 d-flex justify-content-center">
 						<input type="file" id="fileUpload" style="display: none;"
 							accept="image/*" />
 						<button type="button" class="btn btn-primary btn-lg"
 							onclick="document.getElementById('fileUpload').click();">上传/Upload</button>
 					</div>
 				</div>
+
+
+
 
 				<script>
 					document
@@ -320,15 +286,13 @@ html, body {
 
 
 
-			<div class="col-lg-5 mb-4">
-				<div class="card h-100 mb-2" data-bs-toggle="modal"
+			<div class="col-lg-5 mb-6">
+				<div class="card h-80 mb-2" data-bs-toggle="modal"
 					data-bs-target="#imageModal">
 					<img src="../static/images/修复图片.png" class="card-img-top">
 					<p class="card-text">修复图片</p>
-				</div>
 
-				<div class="container mb-3">
-					<div class="button-container mb-5 d-flex justify-content-center">
+                    					<div class="button-container mb-5 d-flex justify-content-center">
 						<button type="button" class="btn btn-primary btn-lg">下载/Download</button>
 					</div>
 				</div>
@@ -339,7 +303,7 @@ html, body {
 
 
 
-		<div class="progress mb-6">
+		<div class="progress">
 			<div class="progress-bar" role="progressbar" style="width: 80%;"
 				aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">80%</div>
 		</div>
