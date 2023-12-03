@@ -250,65 +250,35 @@ html, body {
 			</div>
 		</div>
 
-		<div class="row justify-content-center">
 
-
-			<div class="col-lg-5 mb-6">
-
-				<div class="card h-90 mb-2" data-bs-toggle="modal"
-					data-bs-target="#imageModal">
-					<img id="imageDisplay" src="../static/images/原始图片.png" class="card-img-top">
-					<p class="card-text">原始图片</p>
-
-
-					<div>
+        <div class="row justify-content-center">
+            <div class="col-lg-5 mb-6">
+                <div class="card h-90 mb-2">
+                    <img id="imageDisplay" src="../static/images/原始图片.png" class="card-img-top image-trigger">
+                    <p class="card-text">原始图片</p>
+                    <div>
 						<form id="uploadForm" action="/upload" method="post" enctype="multipart/form-data">
 							<div class="button-container mb-5 d-flex justify-content-center">
-								<input type="file" id="fileUpload" name="image" style="display: none;" accept="image/*" onchange="handleFileSelect()" />
-								<button type="button" class="btn btn-primary btn-lg" onclick="document.getElementById('fileUpload').click();">上传/Upload</button>
+								<input type="file" id="fileUpload" name="image" style="display: none;" accept="image/*" onchange="uploadFile()" />
+								<button type="button" class="btn btn-primary btn-lg" onclick="uploadFile()">上传/Upload</button>
 							</div>
 						</form>
 					</div>
 				</div>
-
-
-
-
-				<script>
-					document
-							.getElementById('fileUpload')
-							.addEventListener(
-									'change',
-									function(event) {
-										var file = event.target.files[0];
-										if (file) {
-											// 使用 FileReader 读取文件
-											var reader = new FileReader();
-											reader.onload = function(e) {
-												// 当文件加载完成后，更新图片的src属性
-												document
-														.getElementById('imageDisplay').src = e.target.result;
-											};
-											reader.readAsDataURL(file);
-										}
-										console.log('文件已选择', file);
-									});
-				</script>
 			</div>
 
 
 
-			<div class="col-lg-5 mb-6">
-				<div class="card h-80 mb-2" data-bs-toggle="modal"
-					data-bs-target="#imageModal">
-					<img src="../static/images/修复图片.png" class="card-img-top">
-					<p class="card-text">修复图片</p>
-
-                    					<div class="button-container mb-5 d-flex justify-content-center">
-						<button type="button" class="btn btn-primary btn-lg">下载/Download</button>
-					</div>
-				</div>
-			</div>
+            <div class="col-lg-5 mb-6">
+                <div class="card h-80 mb-2">
+                    <img src="../static/images/修复图片.png" class="card-img-top image-trigger">
+                    <p class="card-text">修复图片</p>
+                    <div class="button-container mb-5 d-flex justify-content-center">
+                        <button type="button" class="btn btn-primary btn-lg">下载/Download</button>
+                    </div>
+                </div>
+            </div>
+        </div>
 		</div>
 
 
@@ -331,44 +301,58 @@ html, body {
             </div>
         </div>
 
-	<script
-		src="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.2.3/js/bootstrap.bundle.min.js"></script>
+<script
+    src="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.2.3/js/bootstrap.bundle.min.js"></script>
 
-    <script>
-        // JavaScript代码用于在模态框中加载和展示图片
-        var imageModal = document.getElementById('imageModal');
-        imageModal.addEventListener('show.bs.modal', function (event) {
-            var button = event.relatedTarget; // 触发模态框的按钮
-            var src = button.querySelector('.card-img-top').src; // 获取图片的src
-            var modalImage = imageModal.querySelector('#modalImage');
-            modalImage.src = src; // 设置模态框中的图片src
+<script>
+    document.querySelectorAll('.image-trigger').forEach(function(image) {
+        image.addEventListener('click', function() {
+            var src = this.src;
+            var modalImage = document.getElementById('modalImage');
+            modalImage.src = src;
+            var imageModal = new bootstrap.Modal(document.getElementById('imageModal'));
+            imageModal.show();
         });
+    });
 
-        function uploadFile() {
-        var input = document.getElementById('fileUpload');
-        var file = input.files[0];
+// 监听文件选择
+document.getElementById('fileUpload').addEventListener('change', function(event) {
+    var file = event.target.files[0];
+    if (file) {
+        // 使用 FileReader 读取文件
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            // 当文件加载完成后，更新图片的src属性
+            document.getElementById('imageDisplay').src = e.target.result;
+        };
+        reader.readAsDataURL(file);
 
-        if (file) {
-            var formData = new FormData();
-            formData.append('image', file);
+        // 准备上传文件
+        var formData = new FormData();
+        formData.append('image', file);
 
-            var xhr = new XMLHttpRequest();
-            xhr.open('POST', '/upload', true);
+        // 创建 XMLHttpRequest 对象进行异步文件上传
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '/upload', true);
 
-            xhr.onload = function () {
-                if (xhr.status === 200) {
-                    console.log('Image uploaded successfully!');
-                } else {
-                    console.error('Image upload failed.');
-                }
-            };
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                console.log('Image uploaded successfully!');
+            } else {
+                console.error('Image upload failed.');
+            }
+        };
 
-            xhr.send(formData);
-
-            // 手动触发表单提交
-            document.getElementById('uploadForm').submit();
-        }
+        xhr.send(formData);
     }
-    </script>
+});
+
+function uploadFile() {
+    // 触发文件输入
+    document.getElementById('fileUpload').click();
+}
+
+
+</script>
 </body>
 </html>
