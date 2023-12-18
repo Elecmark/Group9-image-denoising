@@ -1,15 +1,21 @@
 from flask import Flask, render_template, request
 import os
+import torch
+print(torch.__version__)
+print(torch.cuda.is_available())
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+print(device)
 
+#
 app = Flask(__name__)
 
 # 获取当前文件（app.py）的绝对路径
 current_dir = os.path.dirname(os.path.abspath(__file__))
 
-# 设置上传文件存储的文件夹为'images'的相对路径
+# 设置上传文件存储的文件夹为'images'的相对路径'test'
 UPLOAD_FOLDER = os.path.join(current_dir, 'images')
 # 允许的文件扩展名
-ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'bmp'}
 
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
@@ -22,10 +28,10 @@ def home():
 
 @app.route('/upload', methods=['POST'])
 def upload_file():
-    if 'image' not in request.files:
+    if 'images' not in request.files:
         return '没有文件部分'
 
-    image = request.files['image']
+    image = request.files['images']
 
     if image.filename == '':
         return '未选择文件'
@@ -43,7 +49,7 @@ def upload_file():
 
         return '图片上传成功！'
     else:
-        return '无效的文件格式。支持的格式：png、jpg、jpeg、gif'
+        return '无效的文件格式。支持的格式：png、jpg、jpeg、gif、bmp'
 
 if __name__ == '__main__':
     app.run()
