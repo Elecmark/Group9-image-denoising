@@ -230,13 +230,36 @@ model.load_state_dict(torch.load(model_path, map_location=torch.device('cpu'))) 
 # model = model.to(device)
 
 # Specify the directory containing test images
-test_dir = "D:/Yee/image-denoising/Group9-image-denoising/test/"  # Replace with the actual path to your test images
+test_dir = "D:/Yee/image-denoising/Group9-image-denoising/images/"  # Replace with the actual path to your test images
 
 # Specify the directory to save the results
 result_dir = "D:/Yee/image-denoising/Group9-image-denoising/result/"  # Replace with the desired path to save results
 
 # List of test image file names
-test_fns = ["1.png"]  # Add your test image file names
+# test_fns = ["Original.png"]  # Add your test image file names
+#
+# for ind, test_img_fn in enumerate(test_fns):
+#     # model.eval()
+#     with torch.no_grad():
+#         # Read the image from the local directory
+#         test_img_path = test_dir + test_img_fn
+#         noisy_img = cv2.imread(test_img_path)
+#         noisy_img = noisy_img[:, :, ::-1] / 255.0
+#         noisy_img = np.array(noisy_img).astype('float32')
+#
+#         temp_noisy_img_chw = hwc_to_chw(noisy_img)
+#         input_var = torch.from_numpy(temp_noisy_img_chw.copy()).type(torch.FloatTensor).unsqueeze(0)
+#         _, output = model(input_var)
+#
+#         output_np = output.squeeze().cpu().detach().numpy()
+#         output_np = chw_to_hwc(np.clip(output_np, 0, 1))
+#
+#         tempImg = np.concatenate((noisy_img, output_np), axis=1) * 255.0
+#         Image.fromarray(np.uint8(tempImg)).save(fp=result_dir + test_img_fn, format='JPEG')
+
+# List of test image file names
+test_fns = ["Original.png"]  # Add your test image file names
+
 
 for ind, test_img_fn in enumerate(test_fns):
     # model.eval()
@@ -254,5 +277,6 @@ for ind, test_img_fn in enumerate(test_fns):
         output_np = output.squeeze().cpu().detach().numpy()
         output_np = chw_to_hwc(np.clip(output_np, 0, 1))
 
-        tempImg = np.concatenate((noisy_img, output_np), axis=1) * 255.0
-        Image.fromarray(np.uint8(tempImg)).save(fp=result_dir + test_img_fn, format='JPEG')
+        # Save the model output with a new filename 'result.jpg'
+        result_filename = "result.jpg"
+        Image.fromarray(np.uint8(output_np * 255.0)).save(fp=result_dir + result_filename, format='JPEG')

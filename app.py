@@ -12,7 +12,7 @@ app = Flask(__name__)
 # 获取当前文件（app.py）的绝对路径
 current_dir = os.path.dirname(os.path.abspath(__file__))
 
-# 设置上传文件存储的文件夹为'images'的相对路径'test'
+# 设置上传文件存储的文件夹为'images'的相对路径
 UPLOAD_FOLDER = os.path.join(current_dir, 'images')
 # 允许的文件扩展名
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'bmp'}
@@ -28,10 +28,10 @@ def home():
 
 @app.route('/upload', methods=['POST'])
 def upload_file():
-    if 'images' not in request.files:
+    if 'image' not in request.files:
         return '没有文件部分'
 
-    image = request.files['images']
+    image = request.files['image']
 
     if image.filename == '':
         return '未选择文件'
@@ -53,3 +53,4 @@ def upload_file():
 
 if __name__ == '__main__':
     app.run()
+
