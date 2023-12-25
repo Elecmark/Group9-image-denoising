@@ -54,3 +54,42 @@ def upload_file():
 if __name__ == '__main__':
     app.run()
 
+# 最初版
+# from flask import send_file
+#
+# @app.route('/result_image')
+# def get_result_image():
+#     # 构造result.jpg的完整路径
+#     result_image_path = os.path.join(current_dir, 'result', 'result.jpg')
+#
+#     # 检查文件是否存在
+#     if os.path.exists(result_image_path):
+#         # 使用Flask的send_file函数发送文件到前端
+#         return send_file(result_image_path, mimetype='image/jpeg', download_name='result.jpg')
+#     else:
+#         return '未找到结果图像'
+
+from flask import Flask, render_template, send_from_directory
+import os
+
+app = Flask(__name__)
+
+# 获取当前文件（app.py）的绝对路径
+current_dir = os.path.dirname(os.path.abspath(__file__))
+
+# 设置存储图片的文件夹为'images'的相对路径
+DOWNLOAD_FOLDER = os.path.join(current_dir, 'result')
+app.config['DOWNLOAD_FOLDER'] = DOWNLOAD_FOLDER
+
+@app.route('/')
+def home():
+    return render_template('Denoising.html')
+
+@app.route('/get_image/<image_filename>')
+def get_image(image_filename):
+    return send_from_directory(app.config['DOWNLOAD_FOLDER'], image_filename)
+
+if __name__ == '__main__':
+    app.run()
+
+

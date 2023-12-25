@@ -1,3 +1,5 @@
+import os
+
 import cv2
 import numpy as np
 import torch
@@ -258,8 +260,8 @@ result_dir = "D:/Yee/image-denoising/Group9-image-denoising/result/"  # Replace 
 #         Image.fromarray(np.uint8(tempImg)).save(fp=result_dir + test_img_fn, format='JPEG')
 
 # List of test image file names
-test_fns = ["Original.png"]  # Add your test image file names
-
+# test_fns = ["Original.png"]  # Add your test image file names
+test_fns = [filename for filename in os.listdir(test_dir) if filename.lower().endswith(('.png', '.jpg', '.jpeg', '.gif', '.bmp'))]
 
 for ind, test_img_fn in enumerate(test_fns):
     # model.eval()
