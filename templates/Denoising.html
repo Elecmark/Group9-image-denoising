@@ -54,6 +54,12 @@
             color: #ffffff; /* 设置文本颜色为白色 */
         }
 
+        #end {
+            color: #7f7f7f; /* 如果需要的话，可以设置文字颜色为白色以提高对比度 */
+            padding: 50px 0; /* 上下内边距，可根据需要调整 */
+            text-align: center; /* 文字居中 */
+        }
+
 
         /* 按钮样式 */
         .btn-icon, .invisible-button {
@@ -96,7 +102,7 @@
             text-align: center;
             font-size: 1.25rem;
             font-weight: bold;
-            margin-top: 1rem;
+            margin-top: auto;
             margin-bottom: 2rem;
             color: #000000;
         }
@@ -107,17 +113,13 @@
             width: 100%;
         }
 
-.card {
-    display: flex;              /* 设为弹性盒子 */
-    flex-direction: column;     /* 子元素垂直排列 */
-    justify-content: space-between; /* 子元素分布在容器的开始和结束位置 */
-    height: 100%;               /* 设定卡片高度为100% */
-}
-
-.button-container {
-    margin-top: auto;           /* 将按钮推到容器底部 */
-    margin-bottom: 1rem;        /* 底部保留一点距离 */
-}
+        /* 卡片样式 */
+        .card {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 100%;
+        }
 
 
         .btn-lg {
@@ -125,17 +127,29 @@
             margin: 0 auto;
         }
 
-.start-button {
-    display: flex;
-    justify-content: center;
-    text-align: center;
-    white-space: nowrap; /* 防止文字换行 */
-    height: 50%;
-    width: 100%;
-    margin-left: auto; /* 水平居中 */
-    margin-right: auto; /* 水平居中 */
-}
+        .button-container {
+            margin-top: auto;
+            margin-bottom: 1rem;
+        }
 
+        .fixed-size-card {
+            /* 确保卡片大小一致 */
+            width: 100%; /* 或其他固定尺寸 */
+        }
+
+        .start-button {
+            padding-top: 50px; /* 增加上内边距 */
+            padding-bottom: 50px; /* 增加下内边距 */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .start-button button {
+            font-size: 1.5rem; /* 增加按钮内文字大小 */
+            padding: 15px 30px; /* 增加按钮的内边距，使按钮更大 */
+            border-radius: 10px; /* 可选：为按钮添加圆角 */
+        }
 
 
         .card:hover {
@@ -164,17 +178,17 @@
         }
 
         .fixed-size-card {
-        width: 400px;  /* 定义卡片的宽度 */
-        height: 500px; /* 定义卡片的高度 */
+            width: 400px; /* 定义卡片的宽度 */
+            height: 500px; /* 定义卡片的高度 */
         }
 
         .responsive-img {
-            max-width: 100%;  /* 最大宽度为卡片宽度 */
+            max-width: 100%; /* 最大宽度为卡片宽度 */
             max-height: 100%; /* 最大高度为卡片高度 */
-            width: auto;      /* 宽度自动 */
-            height: auto;     /* 高度自动 */
-            display: block;   /* 避免底部有空隙 */
-            margin: 0 auto;   /* 水平居中 */
+            width: auto; /* 宽度自动 */
+            height: auto; /* 高度自动 */
+            display: block; /* 避免底部有空隙 */
+            margin: 0 auto; /* 水平居中 */
         }
 
 
@@ -204,7 +218,7 @@
 
         /* 添加其他样式，例如背景色、字体等 */
         #welcome {
-            background-image: url('../static/images/BG1.png'); /* 设置背景图片 */
+            background-image: url('../static/images/BG0.png'); /* 设置背景图片 */
             background-size: cover; /* 覆盖整个区域 */
             background-repeat: no-repeat; /* 不重复图片 */
         }
@@ -216,9 +230,13 @@
         }
 
         #end {
-            background-image: url('../static/images/BG1.png'); /* 设置背景图片 */
+            background-image: url('../static/images/BG2.png'); /* 设置背景图片 */
             background-size: cover; /* 覆盖整个区域 */
             background-repeat: no-repeat; /* 不重复图片 */
+        }
+
+        .my-list li {
+            text-align: center; /* 水平居中列表项 */
         }
 
 
@@ -278,7 +296,13 @@
                             <li>
                                 <hr class="dropdown-divider">
                             </li>
-                            <li><a class="dropdown-item" href="#">赞助</a></li>
+                            <li><span>  Made By</span></li>
+                            <li><span>  PDH</span></li>
+                            <li><span>  SYM</span></li>
+                            <li><span>  SWX</span></li>
+                            <li><span>  WSM</span></li>
+                            <li><span>  WF</span></li>
+
                         </ul>
                     </li>
                 </ul>
@@ -290,68 +314,71 @@
 <!-- 欢迎界面 -->
 <section id="welcome">
     <div id="carouselExample" class="carousel slide" data-bs-ride="carousel">
-        <div class="carousel-inner">
-            <!-- 轮播图项1 -->
 
-            <!-- 轮播图项2 -->
-            <div class="carousel-item active">
-                <img src="../static/images/hello.png" class="d-block w-100" alt="Image 2">
-            </div>
-            <!-- 添加更多轮播图项，按需增加 -->
-        </div>
-        <!-- 轮播图控制按钮 -->
-        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Previous</span>
-        </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Next</span>
-        </button>
     </div>
 </section>
 
 <!-- 功能界面 -->
 <section id="features">
     <div class="row justify-content-center">
-        <div class="col-lg-5 mb-6">
+        <!-- 左侧卡片 -->
+        <div class="col-lg-5 d-flex justify-content-center mb-6">
             <div class="card h-90 mb-2 fixed-size-card">
-                <img id="imageDisplay" src="../static/images/原始图片.png" class="card-img-top image-trigger responsive-img">
+                <img id="imageDisplay" src="../static/test/Original.png"
+                     class="card-img-top image-trigger responsive-img">
                 <p class="card-text">原始图片</p>
+
                 <div>
                     <form id="uploadForm" action="/upload" method="post" enctype="multipart/form-data">
                         <div class="button-container mb-5 d-flex justify-content-center">
-                            <input type="file" id="fileUpload" name="image" style="display: none;" accept="image/*" onchange="uploadFile()"/>
-                            <button type="button" class="btn btn-outline-secondary btn-lg" onclick="uploadFile()">上传</button>
+                            <input type="file" id="fileUpload" name="image" style="display: none;" accept="image/*"
+                                   onchange="uploadFile()"/>
+                            <button type="button" class="btn btn-outline-secondary btn-lg" onclick="uploadFile()">上传
+                            </button>
                         </div>
                     </form>
                 </div>
             </div>
         </div>
 
-        <div class="col-lg-2 col-md-4 mt-6">
-            <div class="start-button mt-5 mb-5 text-center d-flex align-items-center">
-                <button id="startButton" type="button" class="btn btn-outline-secondary btn-lg" onclick="runPythonScript()">去噪</button>
+        <div class="col-lg-2 mt-6 d-flex justify-content-center align-items-center">
+            <div class="start-button mt-5 mb-5">
+                <button id="startButton" type="button" class="btn btn-outline-secondary">去噪</button>
             </div>
         </div>
 
-        <div id="overlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0, 0, 0, 0.5); z-index:1000;">
+
+        <div id="overlay"
+             style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0, 0, 0, 0.5); z-index:1000;">
             <div style="position:absolute; top:50%; left:50%; transform:translate(-50%, -50%);">
                 <div class="spinner-border text-light" role="status">
                     <span class="sr-only"></span>
                 </div>
             </div>
         </div>
-        <div class="col-lg-5 mb-6">
-            <div class="card h-80 mb-2 fixed-size-card">
-                <img id="processDisplay" src="../static/images/修复图片.png" class="card-img-top image-trigger responsive-img">
+
+        <!-- 右侧卡片 -->
+        <div class="col-lg-5 d-flex justify-content-center mb-6">
+            <div class="card h-90 mb-2 fixed-size-card">
+                <img id="processDisplay" src="../static/test/Result.png"
+                     class="card-img-top image-trigger responsive-img">
                 <p class="card-text">修复图片</p>
-                <div class="button-container mb-5 d-flex justify-content-center">
-                    <button type="button" class="btn btn-outline-secondary btn-lg">下载</button>
+
+
+                <div>
+                    <form>
+                        <div class="button-container mb-5 d-flex justify-content-center">
+                            <!-- 下载按钮 -->
+                            <a href="../static/test/Result.png" download="Result.png"
+                               class="btn btn-outline-secondary btn-lg">下载</a>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
+
+
     <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
@@ -372,6 +399,7 @@
     </div>
 </section>
 
+
 <!-- 你的图片上传和进度条内容 -->
 
 <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
@@ -382,24 +410,22 @@
 
 <script>
 
-function runPythonScript() {
-    // 显示遮罩层和加载动画
-    document.getElementById('overlay').style.display = 'block';
+    function runPythonScript() {
+        // 显示遮罩层和加载动画
+        document.getElementById('overlay').style.display = 'block';
 
-    fetch('/runscript')
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                console.log(data.message);
-                // 收到运行结束的信号，隐藏遮罩层和加载动画
-                document.getElementById('overlay').style.display = 'none';
-                // 更新图片显示
-                updateProcessedImage();
-            }
-        });
-}
-
-
+        fetch('/runscript')
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    console.log(data.message);
+                    // 收到运行结束的信号，隐藏遮罩层和加载动画
+                    document.getElementById('overlay').style.display = 'none';
+                    // 更新图片显示
+                    updateProcessedImage();
+                }
+            });
+    }
 
 
     document.getElementById('startButton').addEventListener('click', runPythonScript);
@@ -459,24 +485,24 @@ function runPythonScript() {
             target: '#navbar'
         });
     });
+
     // 修复图像
-function runLocal() {
-    fetch('/runscript')
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                console.log(data.message);
-                // 更新图像显示
-                updateProcessedImage();
-            }
-        });
-}
+    function runLocal() {
+        fetch('/runscript')
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    console.log(data.message);
+                    // 更新图像显示
+                    updateProcessedImage();
+                }
+            });
+    }
 
-function updateProcessedImage() {
-    var img = document.getElementById('processDisplay');
-    img.src = '../static/test/Result.png?' + new Date().getTime(); // 使用时间戳防止缓存
-}
-
+    function updateProcessedImage() {
+        var img = document.getElementById('processDisplay');
+        img.src = '../static/test/Result.png?' + new Date().getTime(); // 使用时间戳防止缓存
+    }
 
 
 </script>
