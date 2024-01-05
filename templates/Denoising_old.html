@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+       <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>云去噪</title>
+
+    <link
+            href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.2.3/css/bootstrap.min.css"
+            rel="stylesheet">
+
+    <style>
+       html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+}
+/* 限制下拉菜单的最大宽度，并防止溢出 */
+.dropdown-menu {
+    max-width: 200px; /* 调整为您需要的宽度 */
+    overflow: hidden;
+    overflow-y: auto; /* 如果需要滚动条 */
+}
+
+/* 设置下拉菜单文字和箭头颜色为白色 */
+.nav-item.dropdown .nav-link,
+.nav-item.dropdown .nav-link:focus,
+.nav-item.dropdown .nav-link:hover,
+.nav-item.dropdown .nav-link:active {
+    color: white;
+}
+
+/* 设置下拉菜单中的所有项目文字颜色为白色，并限制最大宽度 */
+.dropdown-menu-dark .dropdown-item {
+    color: white;
+    max-width: 100%; /* 限制每个下拉项的最大宽度为父容器宽度 */
+    white-space: nowrap; /* 防止文字换行 */
+    overflow: hidden;
+    text-overflow: ellipsis; /* 显示省略号以表示文本被截断 */
+}
+
+/* 设置下拉菜单中的分隔线颜色为白色 */
+.dropdown-menu-dark .dropdown-divider {
+    border-top-color: white;
+}
+
+
+
+/* 通用样式 */
+.container-fluid, .navbar-brand, .dropdown-menu, .dropdown-menu-end, .user-container {
+    color: #ffffff; /* 设置文本颜色为白色 */
+}
+
+.full-width-container {
+    min-height: 110vh;
+}
+
+.background-container {
+    background-image: url('../static/images/BG1.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    /* 设置背景容器的高度 */
+    height: 100%; /* 让背景容器的高度占满整个视口 */
+    position: fixed; /* 使背景容器固定在视口中 */
+    width: 100%; /* 让背景容器的宽度占满整个视口 */
+    z-index: -1; /* 将背景容器的z-index设置为负值，使其位于其他内容下方 */
+}
+
+/* 布局样式 */
+.left-align {
+    text-align: left;
+    margin-left: 20%;
+}
+
+.custom-margin {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.custom-padding {
+    padding-top: 30px;
+    padding-bottom: 30px;
+}
+
+.custom-tab {
+    width: 550px;
+}
+
+/* 按钮样式 */
+.btn-icon, .invisible-button {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    outline: none;
+}
+
+.btn:focus {
+    outline: none;
+}
+
+.btn-icon:hover svg {
+    fill: #0a58ca;
+}
+
+.btn-icon:active svg {
+    fill: #0d6efd;
+}
+
+/* 下拉菜单样式 */
+.dropdown-menu {
+    width: 200px; /* 设置下拉菜单的宽度 */
+}
+
+/* 导航栏样式 */
+.navbar .navbarSupportedContent, .navbar .user-container, .navbar .git-link, .navbar .ouc-link, .navbar .chatgpt-link {
+    position: relative;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    margin: 0 auto;
+    display: table;
+}
+
+/* 卡片样式 */
+.card-text {
+    text-align: center;
+    font-size: 1.25rem;
+    font-weight: bold;
+    margin-top: 1rem;
+    margin-bottom: 2rem;
+    color: #000000;
+}
+
+.card-img-top {
+    height: 20rem;
+    object-fit: contain;
+    width: 100%;
+}
+
+.card {
+    margin: 0 auto;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    transition: 0.3s;
+    height: 30rem;
+    width: 90%;
+    margin-bottom: 2rem;
+}
+
+.btn-lg {
+    width: 50%;
+    margin: 0 auto;
+}
+
+.button-container {
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    margin-top: 1rem;
+    margin-bottom: 2rem;
+}
+
+.start-button{
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    height: 50%;
+}
+
+/* 进度条样式 */
+.progress {
+    position: fixed;
+    bottom: 1%;
+    width: 80%;
+    left: 10%;
+    height: 3%;
+    z-index: 999;
+    color:grey
+}
+
+.card-img-bottom {
+    margin-bottom: 0;
+}
+
+.card:hover {
+    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.3);
+}
+
+
+
+.modal-content {
+    background: none;
+    border: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-dialog {
+    max-width: fit-content;
+    margin: 1.75rem auto;
+}
+
+ #modalImage {
+     max-width: 100%; /* 限制图片的最大宽度为100% */
+     max-height: 600px; /* 限制图片的最大高度 */
+     display: block; /* 使图片居中 */
+     margin: auto; /* 自动边距 */
+ }
+ .custom-icon {
+    width: 130px;
+    height: 130px;
+    background-image: url('static/images/start.png'); /* 替换为您自己的图形路径 */
+    background-size: cover;
+}
+
+    </style>
+</head>
+<body data-spy="scroll" data-target="#navbar" data-offset="0">
+<div class="background-container"></div>
+
+<nav id="navbar" class="navbar bg-dark mb-5 navbar-expand-lg shadow">
+    <button class="invisible-button"></button>
+    <div class="container-fluid">
+        <a class="navbar-brand">
+            <img src="../static/images/Logo.png" alt="Logo" width="30" height="24"
+                 class="d-inline-block align-text-top">
+            云去噪
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasDarkNavbar"
+                aria-controls="offcanvasDarkNavbar">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="offcanvas offcanvas-end text-bg-dark" tabindex="-1" id="offcanvasDarkNavbar"
+             aria-labelledby="offcanvasDarkNavbarLabel">
+            <div class="offcanvas-header">
+                <h5 class="offcanvas-title" id="offcanvasDarkNavbarLabel">Dark offcanvas</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"
+                        aria-label="Close"></button>
+            </div>
+            <div class="offcanvas-body">
+                <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+
+
+                                        <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                           aria-expanded="false">
+                           About  us
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-dark">
+                            <li><a class="dropdown-item" href="#">CSDN</a></li>
+                            <li><a class="dropdown-item" href="#">Github</a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li><a class="dropdown-item" href="#">赞助</a></li>
+                        </ul>
+                    </li>
+
+
+
+
+
+                    <li class="nav-item">
+                        <div class="chatgpt-link ">
+                            <a href="https://blog.csdn.net/LanLinHui?spm=1011.2415.3001.5343"
+                               target="_blank" class="nav-link btn-icon" title="博客Blog">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#ffffff"
+                                     class="bi bi-chat-dots-fill" viewBox="0 0 16 16">
+                                    <path d="M16 8c0 3.866-3.582 7-8 7a9.06 9.06 0 0 1-2.347-.306c-.584.296-1.925.864-4.181 1.234-.2.032-.352-.176-.273-.362.354-.836.674-1.95.77-2.966C.744 11.37 0 9.76 0 8c0-3.866 3.582-7 8-7s8 3.134 8 7zM5 8a1 1 0 1 0-2 0 1 1 0 0 0 2 0zm4 0a1 1 0 1 0-2 0 1 1 0 0 0 2 0zm3 1a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"/>
+                                </svg>
+                            </a>
+                        </div>
+                    </li>
+                    <li class="nav-item">
+                        <a href="https://github.com/Elecmark/Group9-image-denoising"
+                           target="_blank" class="nav-link btn-icon" title="github">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#ffffff"
+                                 class="bi bi-github" viewBox="0 0 16 16">
+                                <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8z"/>
+                            </svg>
+                        </a>
+                    </li>
+
+                </ul>
+
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- 添加带有唯一 ID 的部分 -->
+<section id="section1">
+   <div class="row justify-content-center">
+    <div class="col-lg-5 mb-6">
+        <div class="card h-90 mb-2">
+            <img id="imageDisplay" src="../static/images/原始图片.png" class="card-img-top image-trigger">
+            <p class="card-text">原始图片</p>
+            <div>
+                <form id="uploadForm" action="/upload" method="post" enctype="multipart/form-data">
+                    <div class="button-container mb-5 d-flex justify-content-center">
+                        <input type="file" id="fileUpload" name="image" style="display: none;" accept="image/*"
+                               onchange="uploadFile()"/>
+                        <button type="button" class="btn btn-outline-secondary btn-lg" onclick="uploadFile()">
+                            上传/Upload
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+           <!-- 调整了列宽和按钮居中 -->
+    <div class="col-lg-1 col-md-4 mt-6">
+        <div class="start-button mt-5 mb-5 text-center d-flex align-items-center">
+            <div class="custom-icon" onclick="startDenoising"></div>
+        </div>
+    </div>
+
+
+    <div class="col-lg-5 mb-6">
+        <div class="card h-80 mb-2">
+            <img src="../static/images/修复图片.png" class="card-img-top image-trigger">
+            <p class="card-text">修复图片</p>
+            <div class="button-container mb-5 d-flex justify-content-center">
+                <button type="button" class="btn btn-outline-secondary btn-lg">下载/Download</button>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+
+<div class="progress">
+    <div class="progress-bar" role="progressbar" style="width: 80%;"
+         aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">80%
+    </div>
+</div>
+</div>
+
+<div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-body">
+                <img src="" class="img-fluid" id="modalImage">
+            </div>
+        </div>
+    </div>
+</div>
+</section>
+
+<section id="section2">
+    <!-- 你现有的第二部分内容 -->
+</section>
+
+<section id="section3">
+    <!-- 你现有的第三部分内容 -->
+</section>
+
+<!-- 根据需要添加更多部分 -->
+
+<!-- 你现有的图片上传和进度条内容 -->
+
+
+
+<script src="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.2.3/js/bootstrap.bundle.min.js"></script>
+
+<script>
+ document.querySelectorAll('.image-trigger').forEach(function(image) {
+        image.addEventListener('click', function() {
+            var src = this.src;
+            var modalImage = document.getElementById('modalImage');
+            modalImage.src = src;
+            var imageModal = new bootstrap.Modal(document.getElementById('imageModal'));
+            imageModal.show();
+        });
+    });
+
+// 监听文件选择
+document.getElementById('fileUpload').addEventListener('change', function(event) {
+    var file = event.target.files[0];
+    if (file) {
+        // 使用 FileReader 读取文件
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            // 当文件加载完成后，更新图片的src属性
+            document.getElementById('imageDisplay').src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+
+        // 准备上传文件
+        var formData = new FormData();
+        formData.append('image', file);
+
+        // 创建 XMLHttpRequest 对象进行异步文件上传
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '/upload', true);
+
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                console.log('Image uploaded successfully!');
+            } else {
+                console.error('Image upload failed.');
+            }
+        };
+
+        xhr.send(formData);
+    }
+});
+
+function uploadFile() {
+    // 触发文件输入
+    document.getElementById('fileUpload').click();
+}
+
+</script>
+</body>
+</html>

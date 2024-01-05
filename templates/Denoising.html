@@ -1,4 +1,3 @@
-```
 <!DOCTYPE html>
 <html lang="zh">
 <head>
@@ -55,41 +54,6 @@
             color: #ffffff; /* 设置文本颜色为白色 */
         }
 
-        .full-width-container {
-            min-height: 110vh;
-        }
-
-        .background-container {
-            background-image: url('../static/images/BG1.png');
-            background-size: cover;
-            background-repeat: no-repeat;
-            background-position: center;
-            /* 设置背景容器的高度 */
-            height: 100%; /* 让背景容器的高度占满整个视口 */
-            position: fixed; /* 使背景容器固定在视口中 */
-            width: 100%; /* 让背景容器的宽度占满整个视口 */
-            z-index: -1; /* 将背景容器的z-index设置为负值，使其位于其他内容下方 */
-        }
-
-        /* 布局样式 */
-        .left-align {
-            text-align: left;
-            margin-left: 20%;
-        }
-
-        .custom-margin {
-            margin-top: 10px;
-            margin-bottom: 10px;
-        }
-
-        .custom-padding {
-            padding-top: 30px;
-            padding-bottom: 30px;
-        }
-
-        .custom-tab {
-            width: 550px;
-        }
 
         /* 按钮样式 */
         .btn-icon, .invisible-button {
@@ -143,45 +107,35 @@
             width: 100%;
         }
 
-        .card {
-            margin: 0 auto;
-            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-            transition: 0.3s;
-            height: 30rem;
-            width: 100%;
-            margin-bottom: 2rem;
-        }
+.card {
+    display: flex;              /* 设为弹性盒子 */
+    flex-direction: column;     /* 子元素垂直排列 */
+    justify-content: space-between; /* 子元素分布在容器的开始和结束位置 */
+    height: 100%;               /* 设定卡片高度为100% */
+}
+
+.button-container {
+    margin-top: auto;           /* 将按钮推到容器底部 */
+    margin-bottom: 1rem;        /* 底部保留一点距离 */
+}
+
 
         .btn-lg {
             width: 50%;
             margin: 0 auto;
         }
 
-        .button-container {
-            display: flex;
-            justify-content: center;
-            text-align: center;
-            margin-top: 1rem;
-            margin-bottom: 2rem;
-        }
+.start-button {
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    white-space: nowrap; /* 防止文字换行 */
+    height: 50%;
+    width: 100%;
+    margin-left: auto; /* 水平居中 */
+    margin-right: auto; /* 水平居中 */
+}
 
-        .start-button {
-            display: flex;
-            justify-content: center;
-            text-align: center;
-            height: 50%;
-        }
-
-        /* 进度条样式 */
-        .progress {
-            position: fixed;
-            bottom: 1%;
-            width: 80%;
-            left: 10%;
-            height: 3%;
-            z-index: 999;
-            color: grey
-        }
 
 
         .card:hover {
@@ -204,17 +158,25 @@
 
         #modalImage {
             max-width: 100%; /* 限制图片的最大宽度为100% */
-            max-height: 600px; /* 限制图片的最大高度 */
+            max-height: 100%; /* 限制图片的最大高度 */
             display: block; /* 使图片居中 */
             margin: auto; /* 自动边距 */
         }
 
-        .custom-icon {
-            width: 100px;
-            height: 100px;
-            background-image: url('static/images/start.png'); /* 替换为您自己的图形路径 */
-            background-size: cover;
+        .fixed-size-card {
+        width: 400px;  /* 定义卡片的宽度 */
+        height: 500px; /* 定义卡片的高度 */
         }
+
+        .responsive-img {
+            max-width: 100%;  /* 最大宽度为卡片宽度 */
+            max-height: 100%; /* 最大高度为卡片高度 */
+            width: auto;      /* 宽度自动 */
+            height: auto;     /* 高度自动 */
+            display: block;   /* 避免底部有空隙 */
+            margin: 0 auto;   /* 水平居中 */
+        }
+
 
         body {
             position: relative;
@@ -330,9 +292,7 @@
     <div id="carouselExample" class="carousel slide" data-bs-ride="carousel">
         <div class="carousel-inner">
             <!-- 轮播图项1 -->
-            <div class="carousel-item active">
-                <img src="../static/images/BG1.png" class="d-block w-100" alt="Image 1">
-            </div>
+
             <!-- 轮播图项2 -->
             <div class="carousel-item active">
                 <img src="../static/images/hello.png" class="d-block w-100" alt="Image 2">
@@ -355,55 +315,48 @@
 <section id="features">
     <div class="row justify-content-center">
         <div class="col-lg-5 mb-6">
-            <div class="card h-90 mb-2">
-                <img id="imageDisplay" src="../static/images/原始图片.png" class="card-img-top image-trigger">
+            <div class="card h-90 mb-2 fixed-size-card">
+                <img id="imageDisplay" src="../static/images/原始图片.png" class="card-img-top image-trigger responsive-img">
                 <p class="card-text">原始图片</p>
                 <div>
                     <form id="uploadForm" action="/upload" method="post" enctype="multipart/form-data">
                         <div class="button-container mb-5 d-flex justify-content-center">
-                            <input type="file" id="fileUpload" name="image" style="display: none;" accept="image/*"
-                                   onchange="uploadFile()"/>
-                            <button type="button" class="btn btn-outline-secondary btn-lg" onclick="uploadFile()">
-                                上传/Upload
-                            </button>
+                            <input type="file" id="fileUpload" name="image" style="display: none;" accept="image/*" onchange="uploadFile()"/>
+                            <button type="button" class="btn btn-outline-secondary btn-lg" onclick="uploadFile()">上传</button>
                         </div>
                     </form>
                 </div>
             </div>
         </div>
-        <!-- 调整了列宽和按钮居中 -->
+
         <div class="col-lg-2 col-md-4 mt-6">
             <div class="start-button mt-5 mb-5 text-center d-flex align-items-center">
-                <div class="custom-icon" onclick="startDenoising"></div>
+                <button id="startButton" type="button" class="btn btn-outline-secondary btn-lg" onclick="runPythonScript()">去噪</button>
             </div>
         </div>
 
-
+        <div id="overlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0, 0, 0, 0.5); z-index:1000;">
+            <div style="position:absolute; top:50%; left:50%; transform:translate(-50%, -50%);">
+                <div class="spinner-border text-light" role="status">
+                    <span class="sr-only"></span>
+                </div>
+            </div>
+        </div>
         <div class="col-lg-5 mb-6">
-            <div class="card h-80 mb-2">
-                <img src="../static/images/修复图片.png" class="card-img-top image-trigger">
+            <div class="card h-80 mb-2 fixed-size-card">
+                <img id="processDisplay" src="../static/images/修复图片.png" class="card-img-top image-trigger responsive-img">
                 <p class="card-text">修复图片</p>
                 <div class="button-container mb-5 d-flex justify-content-center">
-                    <button type="button" class="btn btn-outline-secondary btn-lg">下载/Download</button>
+                    <button type="button" class="btn btn-outline-secondary btn-lg">下载</button>
                 </div>
             </div>
         </div>
     </div>
-    </div>
-
-
-    <div class="progress">
-        <div class="progress-bar" role="progressbar" style="width: 80%;"
-             aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">80%
-        </div>
-    </div>
-    </div>
-
     <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
                 <div class="modal-body">
-                    <img src="" class="img-fluid" id="modalImage">
+                    <img src="" class="img-fluid" id="modalImage" alt="">
                 </div>
             </div>
         </div>
@@ -429,6 +382,27 @@
 
 <script>
 
+function runPythonScript() {
+    // 显示遮罩层和加载动画
+    document.getElementById('overlay').style.display = 'block';
+
+    fetch('/runscript')
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                console.log(data.message);
+                // 收到运行结束的信号，隐藏遮罩层和加载动画
+                document.getElementById('overlay').style.display = 'none';
+                // 更新图片显示
+                updateProcessedImage();
+            }
+        });
+}
+
+
+
+
+    document.getElementById('startButton').addEventListener('click', runPythonScript);
     document.querySelectorAll('.image-trigger').forEach(function (image) {
         image.addEventListener('click', function () {
             var src = this.src;
@@ -485,7 +459,26 @@
             target: '#navbar'
         });
     });
+    // 修复图像
+function runLocal() {
+    fetch('/runscript')
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                console.log(data.message);
+                // 更新图像显示
+                updateProcessedImage();
+            }
+        });
+}
+
+function updateProcessedImage() {
+    var img = document.getElementById('processDisplay');
+    img.src = '../static/test/Result.png?' + new Date().getTime(); // 使用时间戳防止缓存
+}
+
+
+
 </script>
 </body>
 </html>
-```

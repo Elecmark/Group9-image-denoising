@@ -7,7 +7,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 from PIL import Image
 
-
+print("Local.py 被执行了")
 class FCN(nn.Module):
     def __init__(self):
         super(FCN, self).__init__()
@@ -224,61 +224,56 @@ def chw_to_hwc(image):
     return np.transpose(image, (1, 2, 0))
 
 
+# 检查 CUDA 是否可用并设置设备
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
 # Load the saved model
 model = CBDNet()  # 导入网络结构
 model_path = "model.pth"  # Replace with the actual path to your saved model
-model.load_state_dict(torch.load(model_path, map_location=torch.device('cpu')))  # 导入网络的参数
-# device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-# model = model.to(device)
+model.load_state_dict(torch.load(model_path))  # 导入网络的参数
+model = model.to(device)  # 将模型移动到指定的设备
 
 # Specify the directory containing test images
-test_dir = "D:/Yee/image-denoising/Group9-image-denoising/images/"  # Replace with the actual path to your test images
+test_dir = "./static/test/"  # 测试图片的路径
 
 # Specify the directory to save the results
-result_dir = "D:/Yee/image-denoising/Group9-image-denoising/result/"  # Replace with the desired path to save results
+result_dir = "./static/test/"  # 结果保存的路径
 
-# List of test image file names
-# test_fns = ["Original.png"]  # Add your test image file names
-#
-# for ind, test_img_fn in enumerate(test_fns):
-#     # model.eval()
-#     with torch.no_grad():
-#         # Read the image from the local directory
-#         test_img_path = test_dir + test_img_fn
-#         noisy_img = cv2.imread(test_img_path)
-#         noisy_img = noisy_img[:, :, ::-1] / 255.0
-#         noisy_img = np.array(noisy_img).astype('float32')
-#
-#         temp_noisy_img_chw = hwc_to_chw(noisy_img)
-#         input_var = torch.from_numpy(temp_noisy_img_chw.copy()).type(torch.FloatTensor).unsqueeze(0)
-#         _, output = model(input_var)
-#
-#         output_np = output.squeeze().cpu().detach().numpy()
-#         output_np = chw_to_hwc(np.clip(output_np, 0, 1))
-#
-#         tempImg = np.concatenate((noisy_img, output_np), axis=1) * 255.0
-#         Image.fromarray(np.uint8(tempImg)).save(fp=result_dir + test_img_fn, format='JPEG')
 
-# List of test image file names
-# test_fns = ["Original.png"]  # Add your test image file names
-test_fns = [filename for filename in os.listdir(test_dir) if filename.lower().endswith(('.png', '.jpg', '.jpeg', '.gif', '.bmp'))]
+# 尝试读取图片的不同格式
+image_formats = ['.jpg', '.jpeg', '.png', '.bmp', '.tif', '.tiff']
+test_img_fn = "Original.bmp"
+for fmt in image_formats:
+    if os.path.exists(test_dir + "Original" + fmt):
+        test_img_fn = "Original" + fmt
+        break
 
-for ind, test_img_fn in enumerate(test_fns):
-    # model.eval()
+test_img_path = test_dir + test_img_fn
+print("Trying to read image from:", test_img_path)
+noisy_img = cv2.imread(test_img_path)
+if noisy_img is None:
+    print("Failed to read image. Please check the file path and integrity.")
+    exit()
+
+
+if test_img_fn:
     with torch.no_grad():
-        # Read the image from the local directory
+        print(test_img_fn)
+        # 从本地目录读取图片
         test_img_path = test_dir + test_img_fn
         noisy_img = cv2.imread(test_img_path)
         noisy_img = noisy_img[:, :, ::-1] / 255.0
         noisy_img = np.array(noisy_img).astype('float32')
 
         temp_noisy_img_chw = hwc_to_chw(noisy_img)
-        input_var = torch.from_numpy(temp_noisy_img_chw.copy()).type(torch.FloatTensor).unsqueeze(0)
+        # 将处理后的图像数据转化为张量，并移动到 GPU（如果可用）
+        input_var = torch.from_numpy(temp_noisy_img_chw).type(torch.FloatTensor).unsqueeze(0).to(device)
         _, output = model(input_var)
 
         output_np = output.squeeze().cpu().detach().numpy()
         output_np = chw_to_hwc(np.clip(output_np, 0, 1))
 
-        # Save the model output with a new filename 'result.jpg'
-        result_filename = "result.jpg"
-        Image.fromarray(np.uint8(output_np * 255.0)).save(fp=result_dir + result_filename, format='JPEG')
+        # 保存去噪后的图像
+        Image.fromarray(np.uint8(output_np * 255.0)).save(fp=result_dir + 'Result.png', format='PNG')
+else:
+    print("Original image not found in any of the expected formats.")

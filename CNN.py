@@ -185,50 +185,43 @@ class fixed_loss(nn.Module):
         loss = torch.mean( \
             # 第三部分：重建损失
             torch.pow((out_image - gt_image), 2)) + \
-               if_asym * 0.5 * torch.mean(
+            if_asym * 0.5 * torch.mean(
             torch.mul(torch.abs(0.3 - F.relu(gt_noise - est_noise)), torch.pow(est_noise - gt_noise, 2))) + \
-               0.05 * tvloss
+            0.05 * tvloss
 
         return loss
-
     def _tensor_size(self, t):
         return t.size()[1] * t.size()[2] * t.size()[3]
-
 
 # 这个类用于存储 loss，观察结果时使用
 # 每轮训练一张图像，就计算一下 loss 的均值存储在 self.avg 里，用于输出观察变化
 # 同时，把当前 loss 的值存储在 self.val 里
 class AverageMeter(object):
-    def __init__(self):
-        self.reset()
+	def __init__(self):
+		self.reset()
 
-    def reset(self):
-        self.val = 0
-        self.avg = 0
-        self.sum = 0
-        self.count = 0
+	def reset(self):
+		self.val = 0
+		self.avg = 0
+		self.sum = 0
+		self.count = 0
 
-    def update(self, val, n=1):
-        self.val = val
-        self.sum += val * n
-        self.count += n
-        self.avg = self.sum / self.count
-
+	def update(self, val, n=1):
+		self.val = val
+		self.sum += val * n
+		self.count += n
+		self.avg = self.sum / self.count
 
 # 图像矩阵由 hwc 转换为 chw ，这个就不多解释了
 def hwc_to_chw(img):
     return np.transpose(img, axes=[2, 0, 1])
-
-
 # 图像矩阵由 chw 转换为 hwc ，这个也不多解释
 def chw_to_hwc(img):
     return np.transpose(img, axes=[1, 2, 0])
-
-
 # 训练的时候，输入图像尺寸都是 ps x ps 的
 ps = 256
 
-train_dir = 'D:/Yee/image-denoising/Group9-image-denoising/mini_denoise_dataset/train/'
+train_dir = 'D:/Fork/Group9-image-denoising/mini_denoise_dataset/train/'
 train_fns = glob.glob(train_dir + 'Batch_*')
 
 origin_imgs = [None] * len(train_fns)
@@ -255,23 +248,23 @@ for epoch in range(200):
     for idx in np.random.permutation(len(train_fns)):
         # 读入origin image；RGB通道反过来，然后归一化；转化为 float32类型
         origin_img = cv2.imread(glob.glob(train_fns[idx] + '/*Reference.bmp')[0])
-        origin_img = origin_img[:, :, ::-1] / 255.0
+        origin_img = origin_img[:,:,::-1] / 255.0
         origin_imgs[idx] = np.array(origin_img).astype('float32')
 
         # 读入noised image；因为一个文件夹里有2张噪声图，这里写了一个循环
         train_noised_list = glob.glob(train_fns[idx] + '/*Noisy.bmp')
         for nidx in range(len(train_noised_list)):
             noised_img = cv2.imread(train_noised_list[nidx])
-            noised_img = noised_img[:, :, ::-1] / 255.0
+            noised_img = noised_img[:,:,::-1] / 255.0
             noised_img = np.array(noised_img).astype('float32')
             noised_imgs[idx].append(noised_img)
 
             H, W, C = origin_img.shape
             # 从图像中随机取 256x256 大小的块
-            xx = np.random.randint(0, W - ps + 1)
-            yy = np.random.randint(0, H - ps + 1)
-            temp_origin_img = origin_imgs[idx][yy:yy + ps, xx:xx + ps, :]
-            temp_noised_img = noised_imgs[idx][nidx][yy:yy + ps, xx:xx + ps, :]
+            xx = np.random.randint(0, W-ps+1)
+            yy = np.random.randint(0, H-ps+1)
+            temp_origin_img = origin_imgs[idx][yy:yy+ps, xx:xx+ps, :]
+            temp_noised_img = noised_imgs[idx][nidx][yy:yy+ps, xx:xx+ps, :]
 
             # 生成 0，1 随机数，随机做图像的左右、上下、通道翻转，增加训练样本的多样性
             if np.random.randint(0, 2) == 1:  # 左右翻转
@@ -290,7 +283,7 @@ for epoch in range(200):
             cnt += 1
 
             # 这里给输入数据增加一个维度，即原来是三维的，现在是四维的，方便CNN处理
-            input_var = torch.from_numpy(temp_noised_img_chw.copy()).type(torch.FloatTensor).unsqueeze(0).to(device)
+            input_var  = torch.from_numpy(temp_noised_img_chw.copy()).type(torch.FloatTensor).unsqueeze(0).to(device)
             target_var = torch.from_numpy(temp_origin_img_chw.copy()).type(torch.FloatTensor).unsqueeze(0).to(device)
 
             # 噪声图像输入网络处理
@@ -303,16 +296,15 @@ for epoch in range(200):
             loss.backward()
             optimizer.step()
 
-    print('[Epoch %d] [Img count %d] [Loss.val: %.4f] ([loss.avg: %.4f])\t' % (
-    epoch, cnt, total_loss.val, total_loss.avg))
-torch.save(model.state_dict(), "model.pth1")
+    print('[Epoch %d] [Img count %d] [Loss.val: %.4f] ([loss.avg: %.4f])\t' % (epoch, cnt, total_loss.val, total_loss.avg))
+torch.save(model.state_dict(),"model.pth1")
 test_dir = 'D:/Fork/Group9-image-denoising/mini_denoise_dataset/test/'
 test_fns = glob.glob(test_dir + '*.bmp')
 
 # 建立 result 目录，保存图片处理结果
 result_dir = './result/'
-if not os.path.exists(result_dir):
-    os.mkdir(result_dir)
+if not os.path.exists( result_dir ):
+    os.mkdir( result_dir )
 for ind, test_img_path in enumerate(test_fns):
     model.eval()
     with torch.no_grad():
@@ -336,3 +328,5 @@ for ind, test_img_path in enumerate(test_fns):
         tempImg = np.concatenate((noisy_img, output_np), axis=1) * 255.0
 
         Image.fromarray(np.uint8(tempImg)).save(fp=result_dir + 'test_%d.jpg' % (ind), format='JPEG')
+
+

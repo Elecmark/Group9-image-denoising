@@ -1,10 +1,10 @@
-from flask import Flask, render_template, request
+import shutil
+
+from flask import Flask, render_template, request, jsonify, send_from_directory, make_response
 import os
 import torch
-print(torch.__version__)
-print(torch.cuda.is_available())
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-print(device)
+import subprocess
+
 
 #
 app = Flask(__name__)
@@ -13,18 +13,42 @@ app = Flask(__name__)
 current_dir = os.path.dirname(os.path.abspath(__file__))
 
 # 设置上传文件存储的文件夹为'images'的相对路径
-UPLOAD_FOLDER = os.path.join(current_dir, 'images')
+UPLOAD_FOLDER = os.path.join(current_dir, 'static/test')
 # 允许的文件扩展名
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'bmp'}
 
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
+
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+
+@app.route('/runscript')
+def run_script():
+    try:
+        # 使用 subprocess 调用 Local.py
+        result = subprocess.run(['python', 'Local.py'], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+        # 使用 GBK 编码解码输出
+        output = result.stdout.decode('gbk')
+        # 返回成功状态
+        return jsonify(success=True, message="Local.py 运行结束")
+
+
+    except subprocess.CalledProcessError as e:
+        return jsonify({'error': 'Execution of Local.py failed', 'details': str(e)})
+    except UnicodeDecodeError as e:
+        return jsonify({'error': 'Unicode decode error', 'details': str(e)})
+
+
+
+
 
 @app.route('/')
 def home():
     return render_template('Denoising.html')
+
 
 @app.route('/upload', methods=['POST'])
 def upload_file():
@@ -51,45 +75,28 @@ def upload_file():
     else:
         return '无效的文件格式。支持的格式：png、jpg、jpeg、gif、bmp'
 
-if __name__ == '__main__':
-    app.run()
 
-# 最初版
-# from flask import send_file
-#
-# @app.route('/result_image')
-# def get_result_image():
-#     # 构造result.jpg的完整路径
-#     result_image_path = os.path.join(current_dir, 'result', 'result.jpg')
-#
-#     # 检查文件是否存在
-#     if os.path.exists(result_image_path):
-#         # 使用Flask的send_file函数发送文件到前端
-#         return send_file(result_image_path, mimetype='image/jpeg', download_name='result.jpg')
-#     else:
-#         return '未找到结果图像'
+@app.route('/save_result', methods=['POST'])
+def save_result_file():
+    result_filename = 'Result.png'
 
-from flask import Flask, render_template, send_from_directory
-import os
+    if allowed_file(result_filename):
+        # 移除之前的 'Result' 图片
+        for filename in os.listdir(UPLOAD_FOLDER):
+            if filename.startswith('Result'):
+                os.remove(os.path.join(UPLOAD_FOLDER, filename))
 
-app = Flask(__name__)
+        # 假设 Local.py 已经生成了 Result.png
+        # 保存 Result.png 到上传文件夹
+        save_path = os.path.join(UPLOAD_FOLDER, result_filename)
+        # 假设 Result.png 在一个可访问的临时位置
+        temp_path = os.path.join('images', result_filename)
+        shutil.move(temp_path, save_path)
 
-# 获取当前文件（app.py）的绝对路径
-current_dir = os.path.dirname(os.path.abspath(__file__))
+        return '结果图片上传成功！'
+    else:
+        return '无效的文件格式。支持的格式：png、jpg、jpeg、gif、bmp'
 
-# 设置存储图片的文件夹为'images'的相对路径
-DOWNLOAD_FOLDER = os.path.join(current_dir, 'result')
-app.config['DOWNLOAD_FOLDER'] = DOWNLOAD_FOLDER
-
-@app.route('/')
-def home():
-    return render_template('Denoising.html')
-
-@app.route('/get_image/<image_filename>')
-def get_image(image_filename):
-    return send_from_directory(app.config['DOWNLOAD_FOLDER'], image_filename)
 
 if __name__ == '__main__':
     app.run()
-
-
